@@ -18,6 +18,11 @@ explore: order_items {
   label: "(1) Orders, Items and Users"
   view_name: order_items
 
+  access_filter: {
+    field: products.brand
+    user_attribute: brand
+  }
+
   join: order_facts {
     type: left_outer
     view_label: "Orders"
@@ -69,6 +74,10 @@ explore: order_items {
 
 explore: events {
   label: "(2) Web Event Data"
+  access_filter: {
+    field: product_viewed.brand
+    user_attribute: brand
+  }
 
   join: sessions {
     type: left_outer
@@ -115,6 +124,10 @@ explore: events {
 
 explore: sessions {
   label: "(3) Web Session Data"
+  access_filter: {
+    field: product_viewed.brand
+    user_attribute: brand
+  }
 
   join: events {
     type: left_outer
@@ -203,6 +216,10 @@ explore: journey_mapping {
   label: "(6) Customer Journey Mapping"
   extends: [order_items]
   view_name: order_items
+  access_filter: {
+    field: next_order_products.brand
+    user_attribute: brand
+  }
 
   join: repeat_purchase_facts {
     relationship: many_to_one
@@ -234,6 +251,12 @@ explore: journey_mapping {
 
 explore: inventory_snapshot {
   label: "(7) Historical Stock Snapshot Analysis"
+
+  access_filter: {
+    field: products.brand
+    user_attribute: brand
+  }
+
   join: trailing_sales_snapshot {
     sql_on: ${inventory_snapshot.product_id}=${trailing_sales_snapshot.product_id}
     AND ${inventory_snapshot.snapshot_date}=${trailing_sales_snapshot.snapshot_date};;
@@ -251,16 +274,5 @@ explore: inventory_snapshot {
     type: left_outer
     sql_on: ${products.distribution_center_id}=${distribution_centers.id} ;;
     relationship: many_to_one
-  }
-}
-
-explore: kitten_order_items {
-  label: "Order Items (Kittens)"
-  hidden: yes
-  extends: [order_items]
-
-  join: users {
-    view_label: "Kittens"
-    from: kitten_users
   }
 }
