@@ -575,8 +575,6 @@
     explore: order_items
     type: single_value
     fields: [order_items.30_day_repeat_purchase_rate]
-    filters:
-      users.country: "{{ _user_attributes['country'] }}"
     sorts: [repeat_purchase_facts.30_day_repeat_purchase_rate desc, order_items.30_day_repeat_purchase_rate
         desc]
     limit: 500
