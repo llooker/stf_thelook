@@ -1,4 +1,4 @@
-connection: "looker-private-demo"
+connection: "thelook_bq"
 label: " eCommerce"
 include: "/views/**/*.view" # include all the views
 include: "/dashboards/*.dashboard.lookml" # include all the views
