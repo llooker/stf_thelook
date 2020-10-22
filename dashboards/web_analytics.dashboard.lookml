@@ -1,10 +1,13 @@
-- dashboard: web_analytics_overview
+- dashboard: web_analytics
   title: Web Analytics
   layout: newspaper
+  preferred_viewer: dashboards
+  description: Gives an overview of web analytics for a Ecommerce clothing store -
+    metrics like views and conversion rates
   query_timezone: user_timezone
-  description: 'Gives an overview of web analytics for a Ecommerce clothing store - metrics like views and conversion rates'
   embed_style:
-    background_color: 'Shows overview of analytics (things like visit volume and conversion rates) for a given ecommerce store'
+    background_color: Shows overview of analytics (things like visit volume and conversion
+      rates) for a given ecommerce store
     show_title: true
     title_color: "#131414"
     show_filters_bar: true
@@ -69,7 +72,6 @@
     explore: order_items
     type: single_value
     fields: [order_items.total_sale_price]
-    filters: {}
     sorts: [orders.total_profit_k desc, order_items.total_sale_price desc]
     limit: 500
     query_timezone: America/Los_Angeles
@@ -95,7 +97,6 @@
     explore: events
     type: looker_pie
     fields: [events.browser, events.count]
-    filters: {}
     sorts: [events.count desc]
     limit: 50
     column_limit: 50
@@ -126,7 +127,6 @@
     explore: events
     type: looker_bar
     fields: [sessions.duration_seconds_tier, sessions.count]
-    filters: {}
     sorts: [sessions.duration_seconds_tier]
     limit: 500
     color_application:
@@ -288,10 +288,14 @@
     type: looker_column
     fields: [sessions.all_sessions, sessions.count_browse_or_later, sessions.count_product_or_later,
       sessions.count_cart_or_later, sessions.count_purchase]
-    filters: {}
     sorts: [sessions.all_sessions desc]
     limit: 500
     column_limit: 50
+    dynamic_fields: [{table_calculation: '1', label: '1', expression: "${sessions.count_browse_or_later}/${sessions.all_sessions}",
+        value_format: !!null '', value_format_name: percent_0, _kind_hint: measure,
+        _type_hint: number}, {table_calculation: '2', label: '2', expression: "${sessions.count_cart_or_later}/${sessions.count_product_or_later}",
+        value_format: !!null '', value_format_name: !!null '', _kind_hint: measure,
+        _type_hint: number}]
     query_timezone: America/Los_Angeles
     x_axis_gridlines: false
     y_axis_gridlines: false
@@ -301,7 +305,6 @@
     y_axis_tick_density: default
     y_axis_tick_density_custom: 5
     show_x_axis_label: true
-    x_axis_label: ''
     show_x_axis_ticks: false
     y_axis_scale_mode: linear
     x_axis_reversed: false
@@ -311,9 +314,6 @@
     stacking: ''
     limit_displayed_rows: false
     legend_position: center
-    colors: ["#5245ed", "#a2dcf3", "#776fdf", "#1ea8df", "#49cec1", "#776fdf", "#49cec1",
-      "#1ea8df", "#a2dcf3", "#776fdf", "#776fdf", "#635189"]
-    series_types: {}
     point_style: circle
     show_value_labels: true
     label_density: 25
@@ -321,10 +321,14 @@
     y_axis_combined: true
     ordering: none
     show_null_labels: false
-    show_dropoff: true
     show_totals_labels: false
     show_silhouette: false
     totals_color: "#808080"
+    x_axis_label: ''
+    colors: ["#5245ed", "#a2dcf3", "#776fdf", "#1ea8df", "#49cec1", "#776fdf", "#49cec1",
+      "#1ea8df", "#a2dcf3", "#776fdf", "#776fdf", "#635189"]
+    series_types: {}
+    show_dropoff: true
     leftAxisLabelVisible: false
     leftAxisLabel: ''
     rightAxisLabelVisible: true
@@ -340,6 +344,8 @@
     labelColor: "#FFF"
     show_null_points: true
     interpolation: linear
+    defaults_version: 1
+    hidden_fields: ['1', '2']
     listen:
       Browser: events.browser
       Traffic Source: users.traffic_source
@@ -354,7 +360,6 @@
     explore: events
     type: looker_map
     fields: [events.approx_location, events.count]
-    filters: {}
     sorts: [events.count desc]
     limit: 1000
     query_timezone: America/Los_Angeles
@@ -461,48 +466,94 @@
     model: thelook
     explore: sessions
     type: looker_pie
-    fields: [sessions.includes_purchase, sessions.count]
+    fields: [purchased, did_not_purchase, sessions.includes_purchase, sessions.count]
+    fill_fields: [sessions.includes_purchase]
     filters:
       sessions.session_start_date: 7 days
-    sorts: [sessions.all_sessions desc, sessions.includes_purchase]
+    sorts: [sessions.all_sessions desc]
     limit: 500
     column_limit: 50
+    dynamic_fields: [{measure: purchased, based_on: sessions.count, label: Purchased,
+        value_format: !!null '', value_format_name: !!null '', _kind_hint: measure,
+        _type_hint: number, filter_expression: "${sessions.includes_purchase} = yes"},
+      {measure: did_not_purchase, based_on: sessions.count, label: Did not Purchase,
+        value_format: !!null '', value_format_name: decimal_0, _kind_hint: measure,
+        _type_hint: number, filter_expression: "${sessions.includes_purchase} != yes"}]
     query_timezone: America/Los_Angeles
-    show_view_names: true
-    colors: ["#5245ed", "#a2dcf3"]
-    show_row_numbers: true
-    ordering: none
-    show_null_labels: false
     value_labels: legend
     label_type: labPer
-    stacking: normal
-    show_value_labels: false
-    label_density: 25
-    legend_position: center
     x_axis_gridlines: false
     y_axis_gridlines: true
-    y_axis_combined: true
+    show_view_names: true
     show_y_axis_labels: true
     show_y_axis_ticks: true
     y_axis_tick_density: default
     y_axis_tick_density_custom: 5
     show_x_axis_label: true
     show_x_axis_ticks: true
-    x_axis_scale: ordinal
+    y_axis_scale_mode: linear
+    x_axis_reversed: false
+    y_axis_reversed: false
+    plot_size_by_field: false
+    trellis: ''
+    stacking: percent
+    limit_displayed_rows: false
+    legend_position: center
+    colors: ["#5245ed", "#a2dcf3"]
+    series_types: {}
     point_style: circle_outline
-    interpolation: linear
-    discontinuous_nulls: false
-    show_null_points: true
-    series_types:
-      users.count: column
-    inner_radius: 50
+    series_colors: {}
     series_labels:
       'No': No Purchase
       'Yes': Results in Purchase
-    series_colors: {}
+    show_value_labels: false
+    label_density: 25
+    x_axis_scale: ordinal
+    y_axis_combined: true
+    ordering: none
+    show_null_labels: false
+    show_totals_labels: false
+    show_silhouette: false
+    totals_color: "#808080"
+    show_row_numbers: true
+    interpolation: linear
+    discontinuous_nulls: false
+    show_null_points: true
+    inner_radius: 50
     note_state: collapsed
     note_display: below
     note_text: Percent of unique visits that result in a purchase
+    defaults_version: 1
+    custom_color_enabled: true
+    show_single_value_title: true
+    show_comparison: false
+    comparison_type: value
+    comparison_reverse_colors: false
+    show_comparison_label: true
+    enable_conditional_formatting: false
+    conditional_formatting_include_totals: false
+    conditional_formatting_include_nulls: false
+    map_plot_mode: points
+    heatmap_gridlines: false
+    heatmap_gridlines_empty: false
+    heatmap_opacity: 0.5
+    show_region_field: true
+    draw_map_labels_above_data: true
+    map_tile_provider: light
+    map_position: fit_data
+    map_scale_indicator: 'off'
+    map_pannable: true
+    map_zoomable: true
+    map_marker_type: circle
+    map_marker_icon_name: default
+    map_marker_radius_mode: proportional_value
+    map_marker_units: meters
+    map_marker_proportional_scale_type: linear
+    map_marker_color_mode: fixed
+    show_legend: true
+    quantize_map_value_colors: false
+    reverse_map_value_colors: false
+    hidden_fields: [did_not_purchase, purchased]
     listen:
       Browser: events.browser
       Traffic Source: users.traffic_source
@@ -518,6 +569,9 @@
     default_value: ''
     allow_multiple_values: true
     required: false
+    ui_config:
+      type: advanced
+      display: popover
     model: thelook
     explore: events
     listens_to_filters: []
@@ -528,6 +582,9 @@
     default_value:
     allow_multiple_values: true
     required: false
+    ui_config:
+      type: advanced
+      display: popover
     model: thelook
     explore: events
     listens_to_filters: []
@@ -538,3 +595,6 @@
     default_value: 2 weeks
     allow_multiple_values: true
     required: false
+    ui_config:
+      type: advanced
+      display: popover

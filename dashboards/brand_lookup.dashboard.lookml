@@ -1,7 +1,9 @@
 - dashboard: brand_lookup
   title: Brand Lookup
-  description: 'Drill down dashboard linked on brand name, showing an overview of orders and web traffic for the filtered brand'
   layout: newspaper
+  preferred_viewer: dashboards
+  description: Drill down dashboard linked on brand name, showing an overview of orders
+    and web traffic for the filtered brand
   query_timezone: user_timezone
   embed_style:
     background_color: "#f6f8fa"
@@ -17,7 +19,6 @@
     explore: order_items
     type: single_value
     fields: [order_items.order_count]
-    filters: {}
     sorts: [order_items.order_count desc]
     limit: 500
     query_timezone: America/Los_Angeles
@@ -37,7 +38,6 @@
     explore: order_items
     type: single_value
     fields: [users.count]
-    filters: {}
     sorts: [users.count desc]
     limit: 500
     query_timezone: America/Los_Angeles
@@ -60,7 +60,6 @@
     explore: order_items
     type: single_value
     fields: [order_items.average_sale_price]
-    filters: {}
     sorts: [order_items.average_sale_price desc]
     limit: 500
     column_limit: 50
@@ -255,7 +254,6 @@
     explore: order_items
     type: looker_line
     fields: [order_items.created_date, order_items.total_sale_price, order_items.average_sale_price]
-    filters: {}
     sorts: [order_items.total_sale_price desc]
     limit: 500
     query_timezone: America/Los_Angeles
@@ -317,7 +315,6 @@
     type: looker_grid
     fields: [users.name, users.email, order_items.count, order_items.total_sale_price,
       users.state]
-    filters: {}
     sorts: [order_items.count desc]
     limit: 15
     column_limit: 50
@@ -350,7 +347,6 @@
     fields: [user_order_facts.lifetime_orders_tier, sessions.count, events.event_hour_of_day]
     pivots: [user_order_facts.lifetime_orders_tier]
     fill_fields: [events.event_hour_of_day]
-    filters: {}
     sorts: [user_order_facts.lifetime_orders_tier 0, events.event_hour_of_day]
     limit: 500
     column_limit: 50
@@ -643,17 +639,17 @@
     model: thelook
     explore: order_items
     type: looker_column
-    fields: [products.category, products.department, order_items.total_sale_price]
-    pivots: [products.department]
-    sorts: [products.department, order_items.total_sale_price desc 0]
+    fields: [products.category, order_items.total_sale_price, women, men]
+    sorts: [order_items.total_sale_price desc]
     limit: 500
     column_limit: 50
+    dynamic_fields: [{measure: women, based_on: order_items.total_sale_price, type: count_distinct,
+        label: Women, value_format: !!null '', value_format_name: usd, _kind_hint: measure,
+        _type_hint: number, filter_expression: '${users.gender} = "Female"'}, {measure: men,
+        based_on: order_items.total_sale_price, type: count_distinct, label: Men,
+        value_format: !!null '', value_format_name: usd, _kind_hint: measure, _type_hint: number,
+        filter_expression: '${users.gender} = "Male"'}]
     query_timezone: user_timezone
-    color_application:
-      collection_id: b43731d5-dc87-4a8e-b807-635bef3948e7
-      palette_id: fb7bb53e-b77b-4ab6-8274-9d420d3d73f3
-      options:
-        steps: 5
     x_axis_gridlines: false
     y_axis_gridlines: true
     show_view_names: false
@@ -671,7 +667,6 @@
     stacking: normal
     limit_displayed_rows: false
     legend_position: center
-    series_types: {}
     point_style: none
     show_value_labels: false
     label_density: 25
@@ -682,6 +677,16 @@
     show_totals_labels: false
     show_silhouette: false
     totals_color: "#808080"
+    color_application:
+      collection_id: b43731d5-dc87-4a8e-b807-635bef3948e7
+      palette_id: fb7bb53e-b77b-4ab6-8274-9d420d3d73f3
+      options:
+        steps: 5
+    y_axes: [{label: Total Sales Price, orientation: left, series: [{axisId: women,
+            id: women, name: Women}, {axisId: men, id: men, name: Men}], showLabels: true,
+        showValues: true, unpinAxis: false, tickDensity: default, tickDensityCustom: 5,
+        type: linear}]
+    series_types: {}
     show_row_numbers: true
     truncate_column_names: false
     hide_totals: false
@@ -691,6 +696,8 @@
     conditional_formatting_ignored_fields: []
     conditional_formatting_include_totals: false
     conditional_formatting_include_nulls: false
+    defaults_version: 1
+    hidden_fields: [order_items.total_sale_price]
     listen: {}
     row: 5
     col: 0
@@ -739,6 +746,9 @@
     default_value: Calvin Klein
     allow_multiple_values: true
     required: false
+    ui_config:
+      type: advanced
+      display: popover
     model: thelook
     explore: order_items
     listens_to_filters: []
@@ -749,12 +759,18 @@
     default_value: 90 days
     allow_multiple_values: true
     required: false
+    ui_config:
+      type: advanced
+      display: popover
   - name: State
     title: State
     type: field_filter
     default_value: ''
     allow_multiple_values: true
     required: false
+    ui_config:
+      type: advanced
+      display: popover
     model: thelook
     explore: order_items
     listens_to_filters: []

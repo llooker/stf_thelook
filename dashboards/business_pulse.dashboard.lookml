@@ -1,7 +1,9 @@
 - dashboard: business_pulse
   title: Business Pulse
   layout: newspaper
-  description: 'Our go-to dashboard for everything ecommerce related - shows metrics like sales price, orders, and information about uses'
+  preferred_viewer: dashboards
+  description: Our go-to dashboard for everything ecommerce related - shows metrics
+    like sales price, orders, and information about uses
   query_timezone: user_timezone
   embed_style:
     background_color: "#f6f8fa"
@@ -17,7 +19,6 @@
     explore: order_items
     type: single_value
     fields: [order_items.first_purchase_count]
-    filters: {}
     sorts: [order_items.first_purchase_count desc]
     limit: 500
     column_limit: 50
@@ -57,7 +58,6 @@
     explore: order_items
     type: single_value
     fields: [order_items.average_sale_price]
-    filters: {}
     sorts: [orders.average_profit desc, order_items.average_sale_price desc]
     limit: 500
     column_limit: 50
@@ -165,14 +165,13 @@
     col: 0
     width: 16
     height: 6
-  - title: Website Visit Volume vs. Conversion Rate
+  - title: Website Visit Volume vs Conversion Rate
     name: Website Visit Volume vs Conversion Rate
     model: thelook
     explore: events
     type: looker_column
     fields: [events.event_day_of_week, events.sessions_count, events.unique_visitors,
       sessions.overall_conversion]
-    filters: {}
     sorts: [events.event_day_of_week]
     limit: 500
     column_limit: 50
@@ -458,7 +457,6 @@
     explore: order_items
     type: looker_column
     fields: [users.traffic_source, order_items.average_sale_price, user_order_facts.average_lifetime_orders]
-    filters: {}
     sorts: [user_order_facts.lifetime_orders_tier__sort_, users.traffic_source]
     limit: 500
     column_limit: 50
@@ -526,7 +524,6 @@
     type: looker_donut_multiples
     fields: [users.gender, users.traffic_source, order_items.count]
     pivots: [users.traffic_source]
-    filters: {}
     sorts: [user_order_facts.lifetime_orders_tier__sort_, users.traffic_source, order_items.count
         desc 0]
     limit: 500
@@ -779,12 +776,18 @@
     default_value: 90 days
     allow_multiple_values: true
     required: false
+    ui_config:
+      type: advanced
+      display: popover
   - name: State
     title: State
     type: field_filter
     default_value: ''
     allow_multiple_values: true
     required: false
+    ui_config:
+      type: advanced
+      display: popover
     model: thelook
     explore: order_items
     listens_to_filters: [Country]
@@ -795,6 +798,9 @@
     default_value: ''
     allow_multiple_values: false
     required: false
+    ui_config:
+      type: advanced
+      display: popover
     model: thelook
     explore: order_items
     listens_to_filters: [State, Country]
@@ -805,6 +811,9 @@
     default_value: ''
     allow_multiple_values: true
     required: false
+    ui_config:
+      type: advanced
+      display: popover
     model: thelook
     explore: order_items
     listens_to_filters: []
@@ -815,6 +824,9 @@
     default_value: ''
     allow_multiple_values: true
     required: false
+    ui_config:
+      type: advanced
+      display: popover
     model: thelook
     explore: order_items
     listens_to_filters: []
