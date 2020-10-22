@@ -23,6 +23,8 @@ explore: order_items {
     user_attribute: brand
   }
 
+  sql_always_where: {{ _user_attributes['id'] }} = {{ _user_attributes['id'] }};;
+
   join: order_facts {
     type: left_outer
     view_label: "Orders"
@@ -79,6 +81,8 @@ explore: events {
     user_attribute: brand
   }
 
+  sql_always_where: {{ _user_attributes['id'] }} = {{ _user_attributes['id'] }};;
+
   join: sessions {
     type: left_outer
     sql_on: ${events.session_id} =  ${sessions.session_id} ;;
@@ -128,6 +132,8 @@ explore: sessions {
     field: product_viewed.brand
     user_attribute: brand
   }
+
+  sql_always_where: {{ _user_attributes['id'] }} = {{ _user_attributes['id'] }};;
 
   join: events {
     type: left_outer
